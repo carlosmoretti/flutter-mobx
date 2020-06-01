@@ -1,0 +1,83 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:testandoget/controller/counter.controller.dart';
+import 'package:testandoget/store/counter.store.dart';
+import 'package:testandoget/view/testando.view.dart';  
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+
+    var count = Counter();
+    count.counter = 20;
+
+    return MultiProvider(
+      providers: [
+        Provider<Counter>.value(value: count)
+      ],
+      child: GetMaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    var store = Provider.of<Counter>(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'You have pushed the button this many times:',
+            ),
+            Observer(
+              builder: (_) => Center(
+                child: Text(store.counter.toString()),
+              ),
+            ),
+            RaisedButton(
+              child: Text("Abrir"),
+              onPressed: () {
+                Get.to(Testando());
+              },
+            )
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          store.incrementCounter();
+        },
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
